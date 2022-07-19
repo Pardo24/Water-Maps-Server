@@ -6,9 +6,10 @@ const { Schema, model } = require("mongoose");
 const comment= new Schema(
     {
         rating: Number,
+        title: String,
         content: String,
         user: { type: Schema.Types.ObjectId, ref: 'user' },
-        labafont: {type: Schema.Types.ObjectId, ref: ['Font','Labavo']}
+        labafont: {type: Schema.Types.ObjectId, ref: 'Font'||'Labavo'}
 
     },
     {

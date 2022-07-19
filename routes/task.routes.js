@@ -2,39 +2,45 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Task = require('../models/Task.model');
-const Project = require('../models/Project.model');
+const Lavabo = require('../models/Lavabo.model');
+const Font = require('../models/Font.model');
+const Comment= require('../models/comment.model')
 
-//  POST /api/tasks  -  Creates a new task
-router.post('/tasks', (req, res, next) => {
-	const { title, description, projectId } = req.body;
+//  POST --  -  Creates a new comment
+router.post('/lavafont/:lavafontId', (req, res, next) => {
+	const { title, description, lavafontId } = req.body;
+	const {user} = req.session.user
 
-	Task.create({ title, description, project: projectId })
-		.then((newTask) => {
-			return Project.findByIdAndUpdate(projectId, {
-				$push: { tasks: newTask._id }
-			});
+	Comment.create({ title, content, rating,  labafont: lavafontId, user: user._id })
+		.then((newComment) => {
+			if(Font.findById(lavafontId)){
+			return Font.findByIdAndUpdate(lavafontId, {
+				$push: { comments: newComment._id }
+			});}
+			else{
+				return Lavabo.findByIdAndUpdate(lavafontId, {
+					$push: { comments: newComment._id}
+				})
+			}
 		})
 		.then((response) => res.json(response))
 		.catch((err) => res.json(err));
 });
 
-// PUT  /api/tasks/:taskId  - Updates a specific task by id
-router.put('/tasks/:taskId', (req, res, next) => {
-	const { taskId } = req.params;
-	const { inputTitle, inputDescription } = req.body;
-	const title = inputTitle;
-	const description = inputDescription;
+// PUT  ---  - Updates a specific comment by id
+router.put('/comments/:commentId', (req, res, next) => {
+	const { commentId } = req.params;
+	const { title, content, rating } = req.body;
 	
 
-	if (!mongoose.Types.ObjectId.isValid(taskId)) {
+	if (!mongoose.Types.ObjectId.isValid(commentId)) {
 		res.status(400).json({ message: 'Specified id is not valid' });
 		return;
 	}
 
-	Task.findByIdAndUpdate(
-		taskId,
-		{ title, description },
+	Comment.findByIdAndUpdate(
+		commentId,
+		{ title, content, rating },
 		{ new: true }
 	)
 		.then(() => {
@@ -43,17 +49,17 @@ router.put('/tasks/:taskId', (req, res, next) => {
 		.catch((err) => res.json(err));
 });
 
-//  DELETE /api/tasks/:taskId  - Deletes a specific task by id
-router.delete('/tasks/:taskId', (req, res, next) => {
-	const { taskId } = req.params;
+//  DELETE -- Deletes a specific task by id
+router.delete('/comments/:commentId', (req, res, next) => {
+	const { commentId } = req.params;
 
-	if (!mongoose.Types.ObjectId.isValid(taskId)) {
+	if (!mongoose.Types.ObjectId.isValid(commentId)) {
 		res.status(400).json({ message: 'Specified id is not valid' });
 		return;
 	}
 
-	Task.findByIdAndRemove(taskId)
-		.then(() => res.json({ message: `Task with ${taskId} is removed successfully.` }))
+	Comment.findByIdAndRemove(commentId)
+		.then(() => res.json({ message: `Task with ${commentId} is removed successfully.` }))
 		.catch((error) => res.json(error));
 });
 
