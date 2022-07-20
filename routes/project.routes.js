@@ -3,15 +3,42 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Font = require('../models/Font.model');
 const Lavabo = require('../models/Lavabo.model')
+const Axios = require('axios')
+
+
+//  GET /api creates database
+router.get('/get', (req, res, next) => {
+	
+Axios
+.get('http://www.bcn.cat/tercerlloc/files/opendatabcn_lavabos.json')
+.then((alldata)=>{
+	Lavabo.deleteMany()
+	const lavabosData= alldata.data;
+	lavabosData.forEach((lavabo)=>{
+		let {y, x } = lavabo.geo_epgs_4326
+		new Lavabo({lat:y, lng:x}).save()
+	})
+	
+	
 
 
 
-//  GET /api/projects -  Retrieves all of the projects
-router.get('/map', (req, res, next) => {
-	Font.find().populate('comments').then((allFonts) => res.json(allFonts)).catch((err) => res.json(err));
-	Lavabo.find().populate('comments').then((allLavabos) => res.json(allLavabos)).catch((err) => res.json(err));
+	Axios
+	.get('https://opendata-ajuntament.barcelona.cat/data/api/action/datastore_search?resource_id=32c82e7b-2471-4576-9941-b5044312e49f')
+	.then((alldata)=>{
+		Font.deleteMany()
+		const fontsData = alldata.data.result.records
+		fontsData.forEach((font)=>{
+			let {LATITUD, LONGITUD}= font
+			new Font({lat:LATITUD, lng:LONGITUD}).save()
+			//.then(()=>{Font.find().populate('comments').then((allFonts) => res.json(allFonts)).catch((err) => res.json(err));}) (codi per a enviar al front font o lavabo 
+		})
 
+	})})
+	
 });
+
+
 
 //  GET /api/projects/:projectId -  Retrieves a specific project by id
 router.get('/lavafont/:lavafontId', (req, res, next) => {

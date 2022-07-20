@@ -8,7 +8,7 @@ const Comment= require('../models/comment.model')
 
 //  POST --  -  Creates a new comment
 router.post('/lavafont/:lavafontId', (req, res, next) => {
-	const { title, description, lavafontId } = req.body;
+	const { title, content, lavafontId } = req.body;
 	const {user} = req.session.user
 
 	Comment.create({ title, content, rating,  labafont: lavafontId, user: user._id })
