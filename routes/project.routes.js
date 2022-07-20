@@ -38,6 +38,22 @@ Axios
 	
 });
 
+router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front
+	Font.find()
+		.then((fonts)=>{
+			res.json(fonts)
+		})
+		.catch((err)=>res.json(err))
+})
+
+router.get('/lavabos', (req, res, next)=>{ 	//cojer info de la db i enviar al front
+	Lavabo.find()
+		.then((lavabos)=>{
+			res.json(lavabos)
+		})
+		.catch((err)=>res.json(err))
+})
+
 
 
 //  GET /api/projects/:projectId -  Retrieves a specific project by id
