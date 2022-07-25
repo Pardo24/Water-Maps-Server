@@ -36,6 +36,7 @@ Axios
 
 	})})
 	
+	res.redirect('/map')
 });
 
 router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front

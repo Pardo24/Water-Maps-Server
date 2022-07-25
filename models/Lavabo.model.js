@@ -11,8 +11,6 @@ const labavoSchema= new Schema(
 
     photo: [String],
 
-    ratings: [Number],
-
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 }
 

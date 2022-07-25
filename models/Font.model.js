@@ -11,8 +11,6 @@ const fontSchema= new Schema(
             required: true},
     
         photo: [String],
-    
-        ratings: [Number],
         
         comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
     }

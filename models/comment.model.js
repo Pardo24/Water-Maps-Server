@@ -8,6 +8,7 @@ const comment= new Schema(
         rating: Number,
         title: String,
         content: String,
+        photo: String,
         user: { type: Schema.Types.ObjectId, ref: 'user' },
         labafont: {type: Schema.Types.ObjectId, ref: 'Font'||'Labavo'}
 

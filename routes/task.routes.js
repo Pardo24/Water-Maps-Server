@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const Lavabo = require('../models/Lavabo.model');
 const Font = require('../models/Font.model');
 const Comment= require('../models/comment.model')
 
 //  POST --  -  Creates a new comment
 router.post('/lavafont/:lavafontId', (req, res, next) => {
-	const { title, content, lavafontId } = req.body;
-	const {user} = req.session.user
+	const { title, content, rating, photo, labafont } = req.body;
+	const { lavafontId } = req.params;
 
-	Comment.create({ title, content, rating,  labafont: lavafontId, user: user._id })
+	Comment.create({ title, content, rating, photo, labafont }) 
 		.then((newComment) => {
 			if(Font.findById(lavafontId)){
 			return Font.findByIdAndUpdate(lavafontId, {
@@ -30,7 +29,7 @@ router.post('/lavafont/:lavafontId', (req, res, next) => {
 // PUT  ---  - Updates a specific comment by id
 router.put('/comments/:commentId', (req, res, next) => {
 	const { commentId } = req.params;
-	const { title, content, rating } = req.body;
+	const { title, content, rating, photo } = req.body;
 	
 
 	if (!mongoose.Types.ObjectId.isValid(commentId)) {
@@ -40,7 +39,7 @@ router.put('/comments/:commentId', (req, res, next) => {
 
 	Comment.findByIdAndUpdate(
 		commentId,
-		{ title, content, rating },
+		{ title, content, rating, photo },
 		{ new: true }
 	)
 		.then(() => {
