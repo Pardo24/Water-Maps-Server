@@ -3,6 +3,8 @@ const { Schema, model } = require("mongoose");
 
 const labavoSchema= new Schema(
 {
+    nom: String,
+    
     lat: {type:Number,
         required: true},
 

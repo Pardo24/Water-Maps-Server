@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 
 
-const fontSchema= new Schema(
+const piscinaSchema= new Schema(
     {
         nom: String,
         
@@ -19,5 +19,5 @@ const fontSchema= new Schema(
     
     )
 
-    const Font = model("Font", fontSchema);
-    module.exports= Font
+    const Piscina = model("Piscina", piscinaSchema);
+    module.exports= Piscina

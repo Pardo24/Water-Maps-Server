@@ -3,7 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Font = require('../models/Font.model');
 const Lavabo = require('../models/Lavabo.model')
-const Axios = require('axios')
+const Axios = require('axios');
+const Piscina = require('../models/piscina.model');
 
 
 //  GET /api creates database
@@ -16,11 +17,21 @@ Axios
 	const lavabosData= alldata.data;
 	lavabosData.forEach((lavabo)=>{
 		let {y, x } = lavabo.geo_epgs_4326
-		new Lavabo({lat:y, lng:x}).save()
+		console.log(lavabo.addresses)
+		const {neighborhood_name}= lavabo.addresses
+		new Lavabo({lat:y, lng:x, nom:neighborhood_name}).save()
 	})
 	
 	
-
+	Axios
+		.get('https://opendata-ajuntament.barcelona.cat/data/api/action/datastore_search?resource_id=0508ed3c-362b-4f1b-8980-bbdc06358155')
+		.then((alldata)=>{
+			const piscinaData= alldata.data.result.records
+			piscinaData.forEach((piscina)=>{
+				const {geo_epgs_4326_x, geo_epgs_4326_y, addresses_neighborhood_name} = piscina
+				new Piscina ({lat:geo_epgs_4326_y, lng:geo_epgs_4326_x, nom:addresses_neighborhood_name}).save()
+			})
+		})
 
 
 	Axios
@@ -29,14 +40,13 @@ Axios
 		Font.deleteMany()
 		const fontsData = alldata.data.result.records
 		fontsData.forEach((font)=>{
-			let {LATITUD, LONGITUD}= font
-			new Font({lat:LATITUD, lng:LONGITUD}).save()
+			let {LATITUD, LONGITUD, NOM}= font
+			new Font({lat:LATITUD, lng:LONGITUD, nom: NOM}).save()
 			//.then(()=>{Font.find().populate('comments').then((allFonts) => res.json(allFonts)).catch((err) => res.json(err));}) (codi per a enviar al front font o lavabo 
 		})
 
 	})})
-	
-	res.redirect('/map')
+	res.redirect('/api')
 });
 
 router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front
@@ -55,6 +65,11 @@ router.get('/lavabos', (req, res, next)=>{ 	//cojer info de la db i enviar al fr
 		.catch((err)=>res.json(err))
 })
 
+router.get('/piscines', (req, res, next)=>{
+	Piscina.find()
+		.then((piscines)=>res.json(piscines))
+		.catch((err)=> res.json(err))
+})
 
 
 //  GET /api/projects/:projectId -  Retrieves a specific project by id
