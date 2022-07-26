@@ -18,7 +18,7 @@ Axios
 	lavabosData.forEach((lavabo)=>{
 		let {y, x } = lavabo.geo_epgs_4326
 		
-		const {neighborhood_name}= lavabo.addresses
+		const {neighborhood_name}= lavabo.addresses[0]
 		new Lavabo({lat:y, lng:x, nom:neighborhood_name}).save()
 	})
 	
@@ -80,21 +80,44 @@ router.get('/lavafont/:lavafontId', (req, res, next) => {
 		res.status(400).json({ message: 'Specified id is not valid' });
 		return;
 	}
+	Font.findById(lavafontId)
+	.then((response)=>{
 
-	// Each Project document has `tasks` array holding `_id`s of Task documents
-	// We use .populate() method to get swap the `_id`s for the actual Task documents
-	if(Font.findById(lavafontId)){
+		if(response){
 		Font.findById(lavafontId)
-		.populate('comments')
-		.then((project) => res.status(200).json(project))
-		.catch((error) => res.json(error));}
-
+		.populate({
+				path:'comments',
+					populate:{
+							path:'user'
+					}
+				})
+			
+		.then((font) => res.status(200).json(font))
+		.catch((error) => res.json(error))}
+		
+		else if(Piscina.findById(lavafontId)){
+		Piscina.findById(lavafontId)
+		.populate({
+			path:'comments',
+				populate:{
+						path:'user'
+				}
+			})
+		.then((project)=> res.status(200).json(project))
+		.catch((error)=>res.json(error))
+	}
 	else{
 		Lavabo.findById(lavafontId)
-		.populate('comments')
+		.populate({
+			path:'comments',
+				populate:{
+						path:'user'
+				}
+			})
 		.then((project) => res.status(200).json(project))
 		.catch((error) => res.json(error));
-	}
+		}
+	})
 });
 
 

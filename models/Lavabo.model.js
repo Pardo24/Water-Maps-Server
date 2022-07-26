@@ -18,6 +18,6 @@ const labavoSchema= new Schema(
 
 )
 
-const Labavo = model("Labavo", labavoSchema);
+const Labavo = model("Labavo", labavoSchema, 'labavos');
 
 module.exports= Labavo

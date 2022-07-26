@@ -9,7 +9,7 @@ const comment= new Schema(
         title: String,
         content: String,
         photo: String,
-        user: { type: Schema.Types.ObjectId, ref: 'user' },
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
         labafont: {type: Schema.Types.ObjectId, ref: 'Font'||'Labavo'}
 
     },
@@ -20,5 +20,5 @@ const comment= new Schema(
     )
 
 
-    const Comment = model("Comment", comment);
+    const Comment = model("Comment", comment, 'comments');
     module.exports= Comment

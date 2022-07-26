@@ -3,28 +3,38 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Lavabo = require('../models/Lavabo.model');
 const Font = require('../models/Font.model');
-const Comment= require('../models/comment.model')
+const Comment= require('../models/comment.model');
+const Piscina = require('../models/piscina.model');
 
 //  POST --  -  Creates a new comment
 router.post('/lavafont/:lavafontId', (req, res, next) => {
 	const { title, content, rating, photo, labafont } = req.body;
-	const { lavafontId } = req.params;
+	const {lavafontId} = req.params
 
 	Comment.create({ title, content, rating, photo, labafont }) 
 		.then((newComment) => {
-			if(Font.findById(lavafontId)){
-			return Font.findByIdAndUpdate(lavafontId, {
-				$push: { comments: newComment._id }
-			});}
-			else{
-				return Lavabo.findByIdAndUpdate(lavafontId, {
-					$push: { comments: newComment._id}
+
+				Font.findById(lavafontId)
+				.then((responseF)=>{
+					if(responseF){
+						return Font.findByIdAndUpdate(lavafontId, 
+							{$push: { comments: newComment.id } } )}	
+
+					else if(Piscina.findById(labafont)){
+						return Piscina.findByIdAndUpdate(labafont,
+							{$push: {comments: newComment.id } })
+					}
+
+					else{
+						return Lavabo.findByIdAndUpdate(lavafontId, {
+						$push: { comments: newComment.id}})
+				}
 				})
-			}
-		})
-		.then((response) => res.json(response))
-		.catch((err) => res.json(err));
-});
+			.then((response) =>{ res.json(response)
+								console.log(response)})
+			.catch((err) => res.json(err));
+
+		})});
 
 // PUT  ---  - Updates a specific comment by id
 router.put('/comments/:commentId', (req, res, next) => {

@@ -19,5 +19,5 @@ const piscinaSchema= new Schema(
     
     )
 
-    const Piscina = model("Piscina", piscinaSchema);
+    const Piscina = model("Piscina", piscinaSchema, 'piscinas');
     module.exports= Piscina

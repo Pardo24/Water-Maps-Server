@@ -19,5 +19,5 @@ const fontSchema= new Schema(
     
     )
 
-    const Font = model("Font", fontSchema);
+    const Font = model("Font", fontSchema, 'fonts');
     module.exports= Font
