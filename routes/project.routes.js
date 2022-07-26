@@ -17,7 +17,7 @@ Axios
 	const lavabosData= alldata.data;
 	lavabosData.forEach((lavabo)=>{
 		let {y, x } = lavabo.geo_epgs_4326
-		console.log(lavabo.addresses)
+		
 		const {neighborhood_name}= lavabo.addresses
 		new Lavabo({lat:y, lng:x, nom:neighborhood_name}).save()
 	})
