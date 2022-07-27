@@ -6,6 +6,10 @@ const piscinaSchema= new Schema(
     {
         nom: String,
         
+        tipo:{ type: String, 
+            default: 'piscina'
+        },
+        
         lat: {type:Number,
             required: true},
     

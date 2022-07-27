@@ -5,6 +5,10 @@ const { Schema, model } = require("mongoose");
 const fontSchema= new Schema(
     {
         nom: String,
+
+        tipo:{ type: String, 
+            default: 'font'
+        },
         
         lat: {type:Number,
             required: true},

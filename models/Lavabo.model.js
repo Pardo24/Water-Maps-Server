@@ -4,6 +4,9 @@ const { Schema, model } = require("mongoose");
 const labavoSchema= new Schema(
 {
     nom: String,
+    tipo:{ type: String, 
+        default: 'lavabo'
+    },
     
     lat: {type:Number,
         required: true},

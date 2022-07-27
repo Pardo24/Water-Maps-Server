@@ -8,30 +8,39 @@ const Piscina = require('../models/piscina.model');
 
 //  POST --  -  Creates a new comment
 router.post('/lavafont/:lavafontId', (req, res, next) => {
-	const { title, content, rating, photo, labafont } = req.body;
+	const { title, content, rating, photo, labafont, user } = req.body;
 	const {lavafontId} = req.params
 
-	Comment.create({ title, content, rating, photo, labafont }) 
+	Comment.create({ title, content, rating, photo, labafont, user }) 
 		.then((newComment) => {
 
 				Font.findById(lavafontId)
+
 				.then((responseF)=>{
 					if(responseF){
-						return Font.findByIdAndUpdate(lavafontId, 
-							{$push: { comments: newComment.id } } )}	
+						 Font.findByIdAndUpdate(lavafontId, 
+							{$push: { comments: newComment.id } } )
+							
+							.then((response) =>{ res.json(response)
+								console.log(response)})}	
+
 
 					else if(Piscina.findById(labafont)){
-						return Piscina.findByIdAndUpdate(labafont,
+						 Piscina.findByIdAndUpdate(labafont,
 							{$push: {comments: newComment.id } })
-					}
+
+							.then((response) =>{ res.json(response)
+								console.log(response)})}
+
 
 					else{
-						return Lavabo.findByIdAndUpdate(lavafontId, {
+						 Lavabo.findByIdAndUpdate(lavafontId, {
 						$push: { comments: newComment.id}})
-				}
+
+				.then((response) =>{ res.json(response)
+								console.log(response)})}
 				})
-			.then((response) =>{ res.json(response)
-								console.log(response)})
+			
 			.catch((err) => res.json(err));
 
 		})});

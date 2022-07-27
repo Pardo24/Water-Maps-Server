@@ -73,17 +73,15 @@ router.get('/piscines', (req, res, next)=>{
 
 
 //  GET /api/projects/:projectId -  Retrieves a specific project by id
-router.get('/lavafont/:lavafontId', (req, res, next) => {
-	const { lavafontId } = req.params;
-
+router.get('/lavafont/:lavafontId/:tipo', (req, res, next) => {
+	const { lavafontId, tipo } = req.params;
+	
+	console.log(lavafontId)
 	if (!mongoose.Types.ObjectId.isValid(lavafontId)) {
 		res.status(400).json({ message: 'Specified id is not valid' });
 		return;
 	}
-	Font.findById(lavafontId)
-	.then((response)=>{
-
-		if(response){
+	if(tipo==='font'){
 		Font.findById(lavafontId)
 		.populate({
 				path:'comments',
@@ -93,9 +91,11 @@ router.get('/lavafont/:lavafontId', (req, res, next) => {
 				})
 			
 		.then((font) => res.status(200).json(font))
-		.catch((error) => res.json(error))}
-		
-		else if(Piscina.findById(lavafontId)){
+		.catch((error) => res.json(error))
+	}
+
+	
+	else if(tipo==='piscina'){//Piscina.findById(lavafontId)
 		Piscina.findById(lavafontId)
 		.populate({
 			path:'comments',
@@ -103,10 +103,14 @@ router.get('/lavafont/:lavafontId', (req, res, next) => {
 						path:'user'
 				}
 			})
-		.then((project)=> res.status(200).json(project))
+		.then((project)=> {console.log('PIS'+project)
+							res.status(200).json(project)
+							
+		})
 		.catch((error)=>res.json(error))
 	}
-	else{
+
+	else if(tipo==='lavabo'){
 		Lavabo.findById(lavafontId)
 		.populate({
 			path:'comments',
@@ -114,11 +118,12 @@ router.get('/lavafont/:lavafontId', (req, res, next) => {
 						path:'user'
 				}
 			})
-		.then((project) => res.status(200).json(project))
+		.then((project) => { console.log('LAB'+project)
+							res.status(200).json(project)})
 		.catch((error) => res.json(error));
 		}
 	})
-});
+
 
 
 
