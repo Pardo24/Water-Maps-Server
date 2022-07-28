@@ -21,6 +21,6 @@ const labavoSchema= new Schema(
 
 )
 
-const Labavo = model("Labavo", labavoSchema, 'labavos');
+const Lavabo = model("Lavabo", labavoSchema, 'lavabos');
 
-module.exports= Labavo
+module.exports= Lavabo

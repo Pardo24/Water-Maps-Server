@@ -13,7 +13,7 @@ router.post('/lavafont/:lavafontId', (req, res, next) => {
 
 	Comment.create({ title, content, rating, photo, labafont, user }) 
 		.then((newComment) => {
-
+					
 				Font.findById(lavafontId)
 
 				.then((responseF)=>{
@@ -21,16 +21,18 @@ router.post('/lavafont/:lavafontId', (req, res, next) => {
 						 Font.findByIdAndUpdate(lavafontId, 
 							{$push: { comments: newComment.id } } )
 							
-							.then((response) =>{ res.json(response)
-								console.log(response)})}	
+							.then((response) =>{
+								
+								res.json(response)
+								})}	
 
 
-					else if(Piscina.findById(labafont)){
+					else if(Piscina.findById(labafont)!==null){
 						 Piscina.findByIdAndUpdate(labafont,
 							{$push: {comments: newComment.id } })
 
 							.then((response) =>{ res.json(response)
-								console.log(response)})}
+												})}
 
 
 					else{
@@ -38,7 +40,7 @@ router.post('/lavafont/:lavafontId', (req, res, next) => {
 						$push: { comments: newComment.id}})
 
 				.then((response) =>{ res.json(response)
-								console.log(response)})}
+								})}
 				})
 			
 			.catch((err) => res.json(err));

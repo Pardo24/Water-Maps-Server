@@ -51,6 +51,12 @@ Axios
 
 router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front
 	Font.find()
+	.populate({
+		path:'comments',
+			populate:{
+					path:'user'
+			}})
+		
 		.then((fonts)=>{
 			res.json(fonts)
 		})
@@ -59,6 +65,12 @@ router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front
 
 router.get('/lavabos', (req, res, next)=>{ 	//cojer info de la db i enviar al front
 	Lavabo.find()
+	.populate({
+		path:'comments',
+			populate:{
+					path:'user'
+			}
+		})
 		.then((lavabos)=>{
 			res.json(lavabos)
 		})
@@ -67,62 +79,68 @@ router.get('/lavabos', (req, res, next)=>{ 	//cojer info de la db i enviar al fr
 
 router.get('/piscines', (req, res, next)=>{
 	Piscina.find()
+	.populate({
+		path:'comments',
+			populate:{
+					path:'user'
+			}
+		})
 		.then((piscines)=>res.json(piscines))
 		.catch((err)=> res.json(err))
 })
 
 
-//  GET /api/projects/:projectId -  Retrieves a specific project by id
-router.get('/lavafont/:lavafontId/:tipo', (req, res, next) => {
-	const { lavafontId, tipo } = req.params;
+// //  GET /api/projects/:projectId -  Retrieves a specific project by id
+// router.get('/lavafont/:lavafontId/:tipo', (req, res, next) => {
+// 	const { lavafontId, tipo } = req.params;
 	
-	console.log(lavafontId)
-	if (!mongoose.Types.ObjectId.isValid(lavafontId)) {
-		res.status(400).json({ message: 'Specified id is not valid' });
-		return;
-	}
-	if(tipo==='font'){
-		Font.findById(lavafontId)
-		.populate({
-				path:'comments',
-					populate:{
-							path:'user'
-					}
-				})
+// 	console.log(lavafontId)
+// 	if (!mongoose.Types.ObjectId.isValid(lavafontId)) {
+// 		res.status(400).json({ message: 'Specified id is not valid' });
+// 		return;
+// 	}
+// 	if(tipo==='font'){
+// 		Font.findById(lavafontId)
+// 		.populate({
+// 				path:'comments',
+// 					populate:{
+// 							path:'user'
+// 					}
+// 				})
 			
-		.then((font) => res.status(200).json(font))
-		.catch((error) => res.json(error))
-	}
+// 		.then((font) => res.status(200).json(font))
+// 		.catch((error) => res.json(error))
+// 	}
 
 	
-	else if(tipo==='piscina'){//Piscina.findById(lavafontId)
-		Piscina.findById(lavafontId)
-		.populate({
-			path:'comments',
-				populate:{
-						path:'user'
-				}
-			})
-		.then((project)=> {console.log('PIS'+project)
-							res.status(200).json(project)
+// 	if(tipo==='piscina'){//Piscina.findById(lavafontId)
+// 		Piscina.findById(lavafontId)
+// 		.populate({
+// 			path:'comments',
+// 				populate:{
+// 						path:'user'
+// 				}
+// 			})
+// 		.then((project)=> {console.log('PIS'+project)
+// 							res.status(200).json(project)
 							
-		})
-		.catch((error)=>res.json(error))
-	}
+// 		})
+// 		.catch((error)=>res.json(error))
+// 	}
 
-	else if(tipo==='lavabo'){
-		Lavabo.findById(lavafontId)
-		.populate({
-			path:'comments',
-				populate:{
-						path:'user'
-				}
-			})
-		.then((project) => { console.log('LAB'+project)
-							res.status(200).json(project)})
-		.catch((error) => res.json(error));
-		}
-	})
+// 	else{
+// 		Lavabo.findById(lavafontId)
+// 		.populate({
+// 			path:'comments',
+// 				populate:{
+// 						path:'user'
+// 				}
+// 			})
+// 		.then((project) => { console.log('LAB'+project)
+// 							res.status(200).json(project)})
+// 		.catch((error) => res.json(error));
+// 		}
+// 	})
 
 
 
