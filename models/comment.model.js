@@ -10,7 +10,7 @@ const comment= new Schema(
         content: String,
         photo: String,
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        labafont: {type: Schema.Types.ObjectId, ref: 'Font'||'Labavo'}
+        labafont: {type: Schema.Types.ObjectId, ref: 'Font'}
 
     },
     {

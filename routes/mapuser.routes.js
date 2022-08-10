@@ -14,33 +14,34 @@ router.post('/lavafont/:lavafontId', (req, res, next) => {
 	Comment.create({ title, content, rating, photo, labafont, user }) 
 		.then((newComment) => {
 					
-				Font.findById(lavafontId)
+				Lavabo.findById(lavafontId)
 
 				.then((responseF)=>{
 					if(responseF){
-						 Font.findByIdAndUpdate(lavafontId, 
+						 Lavabo.findByIdAndUpdate(lavafontId, 
 							{$push: { comments: newComment.id } } )
 							
 							.then((response) =>{
 								
-								res.json(response)
+								return res.json(response)
 								})}	
 
-
-					else if(Piscina.findById(labafont)!==null){
+					else{
+					 if(Piscina.findById(labafont)!==undefined){
 						 Piscina.findByIdAndUpdate(labafont,
 							{$push: {comments: newComment.id } })
 
-							.then((response) =>{ res.json(response)
+							.then((response) =>{if(response)return res.json(response)
 												})}
 
 
-					else{
-						 Lavabo.findByIdAndUpdate(lavafontId, {
+					else if(Font.findById(labafont)){
+						 Font.findByIdAndUpdate(labafont, {
 						$push: { comments: newComment.id}})
 
-				.then((response) =>{ res.json(response)
-								})}
+				.then((response) =>{ return res.json(response)})
+				}}
+
 				})
 			
 			.catch((err) => res.json(err));
@@ -69,7 +70,7 @@ router.put('/comments/:commentId', (req, res, next) => {
 		.catch((err) => res.json(err));
 });
 
-//  DELETE -- Deletes a specific task by id
+//  DELETE -- Deletes a specific comment by id
 router.delete('/comments/:commentId', (req, res, next) => {
 	const { commentId } = req.params;
 

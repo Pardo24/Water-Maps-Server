@@ -7,19 +7,22 @@ const Axios = require('axios');
 const Piscina = require('../models/piscina.model');
 
 
-//  GET /api creates database
+//  GET /api actualizes database maually
 router.get('/get', (req, res, next) => {
 	
 Axios
 .get('http://www.bcn.cat/tercerlloc/files/opendatabcn_lavabos.json')
 .then((alldata)=>{
-	Lavabo.deleteMany()
 	const lavabosData= alldata.data;
 	lavabosData.forEach((lavabo)=>{
 		let {y, x } = lavabo.geo_epgs_4326
-		
 		const {neighborhood_name}= lavabo.addresses[0]
-		new Lavabo({lat:y, lng:x, nom:neighborhood_name}).save()
+
+		Lavabo.findOne({lat:y, lng:x})
+			.then((lavabo)=>{
+				if(!lavabo){
+			new Lavabo({lat:y, lng:x, nom:neighborhood_name}).save()
+		}})
 	})
 	
 	
@@ -29,7 +32,14 @@ Axios
 			const piscinaData= alldata.data.result.records
 			piscinaData.forEach((piscina)=>{
 				const {geo_epgs_4326_x, geo_epgs_4326_y, addresses_neighborhood_name} = piscina
-				new Piscina ({lat:geo_epgs_4326_y, lng:geo_epgs_4326_x, nom:addresses_neighborhood_name}).save()
+
+
+				Piscina.findOne({lat:geo_epgs_4326_y, lng:geo_epgs_4326_x})
+				.then((piscina)=>{
+					if(!piscina){
+						new Piscina ({lat:geo_epgs_4326_y, lng:geo_epgs_4326_x, nom:addresses_neighborhood_name}).save()
+					}
+				})				
 			})
 		})
 
@@ -37,17 +47,24 @@ Axios
 	Axios
 	.get('https://opendata-ajuntament.barcelona.cat/data/api/action/datastore_search?resource_id=32c82e7b-2471-4576-9941-b5044312e49f')
 	.then((alldata)=>{
-		Font.deleteMany()
+	
 		const fontsData = alldata.data.result.records
 		fontsData.forEach((font)=>{
 			let {LATITUD, LONGITUD, NOM}= font
-			new Font({lat:LATITUD, lng:LONGITUD, nom: NOM}).save()
-			//.then(()=>{Font.find().populate('comments').then((allFonts) => res.json(allFonts)).catch((err) => res.json(err));}) (codi per a enviar al front font o lavabo 
+
+			Font.findOne({lat:LATITUD, lng:LONGITUD})
+			.then((font)=>{
+				if(!font){
+					new Font({lat:LATITUD, lng:LONGITUD, nom: NOM}).save()
+				}
+			})
+		 
 		})
 
 	})})
 	res.redirect('/api')
 });
+
 
 router.get('/fonts', (req, res, next)=>{	//cojer info de la db i enviar al front
 	Font.find()
@@ -85,7 +102,9 @@ router.get('/piscines', (req, res, next)=>{
 					path:'user'
 			}
 		})
-		.then((piscines)=>res.json(piscines))
+		.then((piscines)=>{
+			res.json(piscines)
+		})
 		.catch((err)=> res.json(err))
 })
 
