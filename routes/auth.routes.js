@@ -43,14 +43,15 @@ router.post('/signup', (req, res, next) => {
 				res.status(400).json({ message: 'User already exists.' });
 				return;
 			}
-});
+			else{
 			// If email is unique, proceed to hash the password
 			const salt = bcrypt.genSaltSync(saltRounds);
 			const hashedPassword = bcrypt.hashSync(password, salt);
 
 			// Create the new user in the database
 			// We return a pending promise, which allows us to chain another `then`
-			return User.create({ email, password: hashedPassword, name });
+			return User.create({ email, password: hashedPassword, name })
+		}
 		})
 		.then((createdUser) => {
 			// Deconstruct the newly created user object to omit the password
@@ -67,7 +68,7 @@ router.post('/signup', (req, res, next) => {
 			console.log(err);
 			res.status(500).json({ message: 'Internal Server Error' });
 		});
-
+});
 
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post('/login', (req, res, next) => {
