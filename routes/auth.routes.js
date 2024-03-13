@@ -43,7 +43,7 @@ router.post('/signup', (req, res, next) => {
 				res.status(400).json({ message: 'User already exists.' });
 				return;
 			}
-
+});
 			// If email is unique, proceed to hash the password
 			const salt = bcrypt.genSaltSync(saltRounds);
 			const hashedPassword = bcrypt.hashSync(password, salt);
@@ -67,7 +67,7 @@ router.post('/signup', (req, res, next) => {
 			console.log(err);
 			res.status(500).json({ message: 'Internal Server Error' });
 		});
-});
+
 
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post('/login', (req, res, next) => {
@@ -104,10 +104,10 @@ router.post('/login', (req, res, next) => {
 				// Send the token as the response
 				res.status(200).json({ authToken: authToken });
 			} else {
-				res.status(401).json({ message: 'Unable to authenticate the user' });
+				res.status(401).json({ message: 'Password incorrect' });
 			}
 		})
-		.catch((err) => res.status(500).json({ message: 'Internal Server Error' }));
+		.catch((err) => res.status(500).json({ message: 'User not found' }));
 });
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client

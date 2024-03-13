@@ -4,3 +4,4 @@ node_modules
 .prettierignore
 pnpm-lock.yaml
 .vercel
+.gitignore
